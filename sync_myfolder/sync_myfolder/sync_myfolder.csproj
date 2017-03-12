@@ -41,6 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalIgnore.cs" />
+    <Compile Include="glob\Glob.cs" />
+    <Compile Include="glob\GlobExtensions.cs" />
+    <Compile Include="glob\GlobNode.cs" />
+    <Compile Include="glob\GlobOptions.cs" />
+    <Compile Include="glob\GlobRunner.cs" />
+    <Compile Include="glob\GlobToRegexVisitor.cs" />
+    <Compile Include="glob\Parser.cs" />
+    <Compile Include="glob\Scanner.cs" />
+    <Compile Include="glob\Token.cs" />
+    <Compile Include="glob\TokenKind.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

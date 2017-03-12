@@ -10,11 +10,14 @@ namespace sync_myfolder
 {
     class Program
     {
+        static GlobalIgnore GlobalIgnoreInstance; 
         static void Main(string[] args)
         {
             string src_folder = @"E:\liubo\github\sync_myfolder\test\1\";
             string dst_folder = @"E:\liubo\github\sync_myfolder\test\2\";
-                       
+
+            GlobalIgnoreInstance = new GlobalIgnore();
+            GlobalIgnoreInstance.Init();
             
             Sync(src_folder, dst_folder);
 
@@ -22,6 +25,9 @@ namespace sync_myfolder
         }
         static void Sync(string src, string dst)
         {
+            src = src.Replace('/', '\\');
+            dst = dst.Replace('/', '\\');
+
             if (!Directory.Exists(src) || !Directory.Exists(dst))
             {
                 Console.WriteLine("目标文件夹不存在，退出");
@@ -35,6 +41,13 @@ namespace sync_myfolder
         }
         static void SyncImpl(List<string> record,string src, string dst)
         {
+            if (GlobalIgnoreInstance.IsIgnore(src))
+            {
+                Console.WriteLine("ignore sync folder [{0}] => [{1}]", src, dst);
+
+                return;
+            }
+
             Console.WriteLine("sync folder [{0}] => [{1}]", src, dst);
 
             if (!Directory.Exists(dst))
@@ -42,6 +55,15 @@ namespace sync_myfolder
 
             string[] files = Directory.GetFiles(src);
             string[] dst_files = Directory.GetFiles(dst);
+
+            // 删掉忽略的
+            List<string> tmpList = files.ToList();
+            tmpList.RemoveAll(x => (GlobalIgnoreInstance.IsIgnore(x)));
+            files = tmpList.ToArray();
+            tmpList = dst_files.ToList();
+            tmpList.RemoveAll(x => (GlobalIgnoreInstance.IsIgnore(x)));
+            dst_files = tmpList.ToArray();
+
 
             // 删除的
             foreach (var df in dst_files)
